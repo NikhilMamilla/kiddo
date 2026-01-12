@@ -33,12 +33,14 @@ const CalmCircle: React.FC<CalmCircleProps> = ({ onClose }) => {
         cycle();
 
         return () => {
-            // Cleanup if needed, though simpler with just state updates
+            // Cleanup if needed
         };
     }, []);
 
+    // Brand Palette: #E7F0FA #7BA4D0 #2E5E99 #0D2440
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-indigo-950/90 backdrop-blur-md animate-in fade-in duration-500">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand-dark/95 backdrop-blur-md animate-in fade-in duration-500 font-sans">
             <button
                 onClick={onClose}
                 className="absolute top-8 right-8 text-white/50 hover:text-white transition-colors"
@@ -49,16 +51,16 @@ const CalmCircle: React.FC<CalmCircleProps> = ({ onClose }) => {
             <div className="relative flex flex-col items-center justify-center">
                 {/* Outer Glow */}
                 <div className={`absolute rounded-full transition-all duration-[4000ms] ease-in-out blur-3xl opacity-30
-          ${stage === 'inhale' ? 'w-96 h-96 bg-cyan-400' :
-                        stage === 'hold' ? 'w-96 h-96 bg-indigo-400 scale-105' :
-                            'w-64 h-64 bg-purple-500'}`}
+          ${stage === 'inhale' ? 'w-96 h-96 bg-brand-primary' :
+                        stage === 'hold' ? 'w-96 h-96 bg-brand-medium scale-105' :
+                            'w-64 h-64 bg-brand-light'}`}
                 />
 
                 {/* The Breathing Circle */}
                 <div className={`relative flex items-center justify-center rounded-full border-4 border-white/20 shadow-[0_0_100px_rgba(255,255,255,0.1)] transition-all ease-in-out
-          ${stage === 'inhale' ? 'w-80 h-80 duration-[4000ms] scale-110 bg-cyan-500/20 border-cyan-200/50' :
-                        stage === 'hold' ? 'w-80 h-80 duration-500 scale-110 bg-indigo-500/20 border-indigo-200/50' :
-                            'w-80 h-80 duration-[8000ms] scale-75 bg-purple-500/20 border-purple-200/50'}`}
+          ${stage === 'inhale' ? 'w-80 h-80 duration-[4000ms] scale-110 bg-brand-primary/20 border-brand-primary/50' :
+                        stage === 'hold' ? 'w-80 h-80 duration-500 scale-110 bg-brand-medium/20 border-brand-medium/50' :
+                            'w-80 h-80 duration-[8000ms] scale-75 bg-brand-light/10 border-brand-light/50'}`}
                 >
                     {/* Inner Text */}
                     <div className="text-center transition-all duration-500">
@@ -73,7 +75,7 @@ const CalmCircle: React.FC<CalmCircleProps> = ({ onClose }) => {
                     </div>
                 </div>
 
-                <p className="mt-12 text-indigo-200/60 font-medium tracking-wide uppercase text-sm animate-pulse">
+                <p className="mt-12 text-brand-light/60 font-black tracking-widest uppercase text-xs animate-pulse">
                     Follow the rhythm • 4-7-8 Technique
                 </p>
             </div>

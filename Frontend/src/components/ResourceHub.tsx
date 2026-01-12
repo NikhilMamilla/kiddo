@@ -7,54 +7,44 @@ interface ResourceHubProps {
 
 const ResourceHub: React.FC<ResourceHubProps> = ({ state }) => {
     const getResources = () => {
+        // Strict 4-color palette mapping
         switch (state) {
             case 'Anxiety':
             case 'Stress':
                 return {
                     title: "Focus & Grounding",
                     icon: Anchor,
-                    color: "text-indigo-600",
-                    accent: "indigo",
+                    color: "text-brand-primary",
+                    accent: "brand-primary",
                     items: [
-                        { label: "5-4-3-2-1 Technique", action: "Visual, tactile, and auditory grounding." },
-                        { label: "Physiological Sigh", action: "Rapid recovery for the nervous system." },
-                        { label: "Box Breathing", action: "Standard stress reduction breathing." }
+                        { label: "Box Breathing Technique", action: "Nervous system recovery protocol." },
+                        { label: "Sensory Grounding", action: "Visual and tactile environmental anchoring." },
+                        { label: "Mindful Presence", action: "Intentional focus in the current moment." }
                     ]
                 };
             case 'Depression':
-                return {
-                    title: "Safety & Support",
-                    icon: Shield,
-                    color: "text-sky-600",
-                    accent: "sky",
-                    items: [
-                        { label: "Crisis Text Line", action: "Immediate text support (HOME to 741741)." },
-                        { label: "988 Lifeline", action: "24/7 confidential connection." },
-                        { label: "Community Peer Support", action: "Safe spaces for shared experiences." }
-                    ]
-                };
             case 'Critical Distress':
                 return {
-                    title: "Crisis Resources",
-                    icon: Phone,
-                    color: "text-rose-600",
-                    accent: "rose",
+                    title: "Safety & Connection",
+                    icon: Shield,
+                    color: "text-brand-dark",
+                    accent: "brand-dark",
                     items: [
-                        { label: "Emergency Services", action: "Call 911 for immediate intervention." },
-                        { label: "988 Support", action: "Direct access to crisis counselors." },
-                        { label: "Local Crisis Center", action: "Physical safe havens in your area." }
+                        { label: "Crisis Resource Line", action: "Confidential 24/7 text and call support." },
+                        { label: "Professional Networks", action: "Verified clinical and peer assistance." },
+                        { label: "Immediate Safe Spaces", action: "Local facilities for urgent stabilization." }
                     ]
                 };
             default: // Normal
                 return {
-                    title: "Daily Wellness",
+                    title: "Optimal Performance",
                     icon: Sun,
-                    color: "text-emerald-600",
-                    accent: "emerald",
+                    color: "text-brand-primary",
+                    accent: "brand-primary",
                     items: [
-                        { label: "Gratitude Journal", action: "Cultivate a positive neural pathway." },
-                        { label: "Mindfulness Practice", action: "10 minutes of sensory presence." },
-                        { label: "Wellness Learning", action: "Expand your mental health toolkit." }
+                        { label: "Gratitude Journaling", action: "Strengthening positive cognitive pathways." },
+                        { label: "Holistic Wellness", action: "Integrated physical and mental health habits." },
+                        { label: "Resilience Training", action: "Proactive psychological maintenance toolkit." }
                     ]
                 };
         }
@@ -62,24 +52,25 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ state }) => {
 
     const content = getResources();
     const Icon = content.icon;
+    const isDark = content.accent === 'brand-dark';
 
     return (
-        <div className="bg-white p-6 rounded-[2rem] shadow-soft border border-indigo-50/50 flex flex-col h-full relative overflow-hidden group">
+        <div className="bg-white p-6 rounded-[2rem] shadow-xl border border-brand-light flex flex-col h-full relative overflow-hidden group font-sans">
             {/* Background Glow */}
-            <div className={`absolute -top-20 -right-20 w-40 h-40 bg-${content.accent}-50 rounded-full blur-3xl group-hover:bg-${content.accent}-100/50 transition-colors duration-500`} />
+            <div className={`absolute -top-20 -right-20 w-40 h-40 bg-brand-light rounded-full blur-3xl group-hover:bg-brand-medium/10 transition-colors duration-500`} />
 
             {/* Header */}
             <div className="flex items-center justify-between mb-6 relative z-10">
                 <div className="flex items-center gap-3">
-                    <div className={`p-2 bg-${content.accent}-50 rounded-xl ${content.color} shadow-sm`}>
+                    <div className={`p-2 bg-brand-light rounded-xl ${content.color} shadow-sm border border-brand-medium/10`}>
                         <Icon size={18} />
                     </div>
                     <div>
-                        <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Toolkit</h2>
-                        <h3 className={`text-lg font-display font-bold ${content.color}`}>{content.title}</h3>
+                        <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-medium">Knowledge Hub</h2>
+                        <h3 className={`text-lg font-black ${content.color}`}>{content.title}</h3>
                     </div>
                 </div>
-                <div className="p-2 bg-slate-50 rounded-lg text-slate-300">
+                <div className="p-2 bg-brand-light rounded-lg text-brand-medium hover:text-brand-primary transition-colors cursor-pointer">
                     <ExternalLink size={14} />
                 </div>
             </div>
@@ -89,15 +80,15 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ state }) => {
                 {content.items.map((item, idx) => (
                     <div
                         key={idx}
-                        className={`p-4 rounded-2xl border border-slate-50 bg-slate-50/30 hover:bg-white hover:border-${content.accent}-100 hover:shadow-md transition-all duration-300 group/item cursor-pointer`}
+                        className={`p-4 rounded-2xl border border-brand-light bg-brand-light/20 hover:bg-white hover:border-brand-primary/30 hover:shadow-lg transition-all duration-300 group/item cursor-pointer`}
                     >
                         <div className="flex items-start gap-4">
-                            <div className={`mt-1 p-1 rounded-md bg-${content.accent}-100/50 ${content.color} group-hover/item:scale-110 transition-transform shadow-xs`}>
+                            <div className={`mt-1 p-1 rounded-md bg-brand-primary/10 ${content.color} group-hover/item:scale-110 transition-transform`}>
                                 <ArrowRight size={10} />
                             </div>
                             <div>
-                                <h4 className="text-xs font-bold text-slate-800 mb-0.5 tracking-tight">{item.label}</h4>
-                                <p className="text-[10px] text-slate-500 font-medium leading-relaxed opacity-80">
+                                <h4 className="text-xs font-black text-brand-dark mb-0.5 tracking-tight">{item.label}</h4>
+                                <p className="text-[10px] text-brand-medium font-bold leading-relaxed opacity-80">
                                     {item.action}
                                 </p>
                             </div>
@@ -107,9 +98,9 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ state }) => {
             </div>
 
             {/* Bottom Footer */}
-            <div className="mt-6 pt-5 border-t border-slate-50 flex items-center justify-center relative z-10">
-                <button className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-indigo-600 transition-colors flex items-center gap-2">
-                    Explore Full Hub <ArrowRight size={12} />
+            <div className="mt-6 pt-5 border-t border-brand-light flex items-center justify-center relative z-10">
+                <button className="text-[10px] font-black uppercase tracking-widest text-brand-medium hover:text-brand-primary transition-colors flex items-center gap-2">
+                    Explore Advanced Toolkit <ArrowRight size={12} />
                 </button>
             </div>
         </div>

@@ -14,47 +14,44 @@ export const SentimentGauge: React.FC<SentimentGaugeProps> = ({ sentiment }) => 
     // Convert score (-1 to 1) to percentage (0 to 100)
     const percentage = ((score + 1) / 2) * 100;
 
-    // Determine color based on score
+    // Determine color based on score - strictly using the 4-color palette
     const getColor = (s: number) => {
-        if (s > 0.5) return 'text-emerald-600'; // Very Positive
-        if (s > 0) return 'text-emerald-400';    // Slightly Positive
-        if (s < 0) return 'text-red-600';       // All Negative (True Red)
-        return 'text-indigo-400';              // Neutral
+        if (s > 0) return 'text-brand-primary';    // Positive/Normal
+        if (s < 0) return 'text-brand-dark';       // Negative/Critical
+        return 'text-brand-medium';              // Neutral
     };
 
     const getBgColor = (s: number) => {
-        if (s > 0.5) return 'from-emerald-500 to-teal-600';
-        if (s > 0) return 'from-emerald-300 to-teal-400';
-        if (s < 0) return 'from-red-500 to-red-700';
-        return 'from-slate-400 to-indigo-500';
+        if (s > 0) return 'from-brand-medium to-brand-primary';
+        if (s < 0) return 'from-brand-primary to-brand-dark';
+        return 'from-brand-light to-brand-medium';
     };
 
     const getIcon = (_l: string, s: number) => {
         if (s > 0.5) return '✨';
         if (s > 0) return '😊';
-        if (s < -0.5) return '🚨';
+        if (s < -0.5) return '⚠️';
         if (s < 0) return '😔';
         return '😐';
     };
 
     const getGradientStops = (s: number) => {
-        if (s > 0.5) return { start: '#10b981', end: '#059669' }; // emerald-500 to teal-600
-        if (s > 0) return { start: '#6ee7b7', end: '#2dd4bf' };   // emerald-300 to teal-400
-        if (s < 0) return { start: '#ef4444', end: '#b91c1c' };   // red-500 to red-700
-        return { start: '#94a3b8', end: '#6366f1' };             // slate-400 to indigo-500
+        if (s > 0) return { start: '#7BA4D0', end: '#2E5E99' }; // medium to primary
+        if (s < 0) return { start: '#2E5E99', end: '#0D2440' }; // primary to dark
+        return { start: '#E7F0FA', end: '#7BA4D0' };             // light to medium
     };
 
     const stops = getGradientStops(score);
 
     return (
-        <div className="bg-white p-6 rounded-3xl shadow-soft border border-indigo-50 h-full flex flex-col items-center justify-center relative overflow-hidden group">
+        <div className="bg-white p-6 rounded-3xl shadow-xl border border-brand-light h-full flex flex-col items-center justify-center relative overflow-hidden group">
             <div className="absolute top-2 left-6 flex items-center gap-2">
-                <div className="p-1.5 bg-indigo-50 rounded-lg">
-                    <svg viewBox="0 0 24 24" className="w-3 h-3 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="3">
+                <div className="p-1.5 bg-brand-light rounded-lg">
+                    <svg viewBox="0 0 24 24" className="w-3 h-3 text-brand-primary" fill="none" stroke="currentColor" strokeWidth="3">
                         <path d="M12 2v20M2 12h20" strokeLinecap="round" />
                     </svg>
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Sentiment</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-medium">Sentiment</span>
             </div>
 
             <div className="relative w-40 h-40 mt-4">
@@ -67,7 +64,7 @@ export const SentimentGauge: React.FC<SentimentGaugeProps> = ({ sentiment }) => 
                         stroke="currentColor"
                         strokeWidth="8"
                         fill="transparent"
-                        className="text-slate-100"
+                        className="text-brand-light"
                     />
                     {/* Progress Ring */}
                     <circle
@@ -92,11 +89,11 @@ export const SentimentGauge: React.FC<SentimentGaugeProps> = ({ sentiment }) => 
 
                 {/* Center Content */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-4xl font-display font-black text-slate-900 leading-none">
+                    <span className="text-4xl font-black text-brand-dark leading-none">
                         {Math.round(percentage)}
-                        <span className="text-sm font-bold text-slate-400">%</span>
+                        <span className="text-sm font-bold text-brand-medium">%</span>
                     </span>
-                    <div className="mt-2 flex items-center gap-1.5 bg-slate-50 px-3 py-1 rounded-full border border-slate-100">
+                    <div className="mt-2 flex items-center gap-1.5 bg-brand-light px-3 py-1 rounded-full border border-brand-medium/20">
                         <span className="text-sm">{getIcon(label, score)}</span>
                         <span className={`text-[10px] font-black uppercase tracking-widest ${getColor(score)}`}>
                             {label}
@@ -107,10 +104,10 @@ export const SentimentGauge: React.FC<SentimentGaugeProps> = ({ sentiment }) => 
 
             <div className="mt-8 w-full">
                 <div className="flex justify-between items-center mb-2 px-1">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Tone Spectrum</span>
-                    <span className="text-[10px] font-bold text-slate-500">Score: {score.toFixed(2)}</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-brand-medium">Tone Spectrum</span>
+                    <span className="text-[10px] font-bold text-brand-dark">Score: {score.toFixed(2)}</span>
                 </div>
-                <div className="relative h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                <div className="relative h-2 w-full bg-brand-light rounded-full overflow-hidden">
                     <div
                         className={`absolute top-0 bottom-0 left-1/2 transition-all duration-700 bg-gradient-to-r ${getBgColor(score)}`}
                         style={{
@@ -121,9 +118,9 @@ export const SentimentGauge: React.FC<SentimentGaugeProps> = ({ sentiment }) => 
                     <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-white z-10" />
                 </div>
                 <div className="flex justify-between mt-1 px-1">
-                    <span className="text-[8px] font-black uppercase text-rose-400 tracking-tighter">Negative</span>
-                    <span className="text-[8px] font-black uppercase text-slate-300 tracking-tighter">Neutral</span>
-                    <span className="text-[8px] font-black uppercase text-emerald-400 tracking-tighter">Positive</span>
+                    <span className="text-[8px] font-black uppercase text-brand-dark tracking-tighter">Critical</span>
+                    <span className="text-[8px] font-black uppercase text-brand-medium tracking-tighter">Neutral</span>
+                    <span className="text-[8px] font-black uppercase text-brand-primary tracking-tighter">Normal</span>
                 </div>
             </div>
         </div>

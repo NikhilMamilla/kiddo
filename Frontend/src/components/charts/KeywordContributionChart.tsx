@@ -19,18 +19,18 @@ export const KeywordContributionChart: React.FC<KeywordContributionChartProps> =
 
     if (data.length === 0) return null;
 
-    // Color palette for different categories
-    const categoryColors = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981'];
+    // Use shades from the 4-color palette
+    const categoryColors = ['#0D2440', '#2E5E99', '#7BA4D0', '#2E5E99', '#0D2440'];
 
     const CustomTooltip = ({ active, payload }: any) => {
         if (active && payload && payload.length) {
             return (
-                <div className="bg-slate-900/95 backdrop-blur-sm text-white px-4 py-3 rounded-xl border border-indigo-400/20 shadow-2xl">
-                    <p className="text-xs font-bold text-slate-300 mb-1">{payload[0].payload.name}</p>
-                    <p className="text-2xl font-black bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                <div className="bg-brand-dark/95 backdrop-blur-sm text-white px-4 py-3 rounded-xl border border-brand-primary/20 shadow-2xl">
+                    <p className="text-xs font-bold text-brand-light/70 mb-1">{payload[0].payload.name}</p>
+                    <p className="text-2xl font-black text-brand-primary">
                         {payload[0].value}
                     </p>
-                    <p className="text-[9px] text-slate-400 mt-1 uppercase tracking-wider">Keywords Matched</p>
+                    <p className="text-[9px] text-brand-medium mt-1 uppercase tracking-wider font-bold">Matches Detected</p>
                 </div>
             );
         }
@@ -38,18 +38,18 @@ export const KeywordContributionChart: React.FC<KeywordContributionChartProps> =
     };
 
     return (
-        <div className="bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 p-6 rounded-3xl shadow-lg border border-blue-100/50 relative overflow-hidden group">
+        <div className="bg-white p-6 rounded-3xl shadow-xl border border-brand-light relative overflow-hidden group font-sans">
             {/* Subtle Glow */}
-            <div className="absolute top-0 left-0 w-40 h-40 bg-blue-300/10 rounded-full blur-3xl group-hover:bg-blue-300/20 transition-all duration-700" />
+            <div className="absolute top-0 left-0 w-40 h-40 bg-brand-light rounded-full blur-3xl group-hover:bg-brand-light/50 transition-all duration-700" />
 
             {/* Header */}
             <div className="flex items-center gap-3 mb-6 relative z-10">
-                <div className="p-2 bg-blue-100 rounded-xl border border-blue-200/50">
-                    <Hash size={18} className="text-blue-600" />
+                <div className="p-2 bg-brand-light rounded-xl border border-brand-medium/20 shadow-sm">
+                    <Hash size={18} className="text-brand-primary" />
                 </div>
                 <div>
-                    <h3 className="text-sm font-bold text-slate-800">Keyword Triggers</h3>
-                    <p className="text-[9px] text-blue-600 uppercase tracking-widest font-bold mt-0.5">Category Matches</p>
+                    <h3 className="text-sm font-bold text-brand-dark">Keyword Triggers</h3>
+                    <p className="text-[9px] text-brand-primary uppercase tracking-widest font-black mt-0.5">Category Intensity</p>
                 </div>
             </div>
 
@@ -57,23 +57,14 @@ export const KeywordContributionChart: React.FC<KeywordContributionChartProps> =
             <div className="w-full h-48 relative z-10">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-                        <defs>
-                            {categoryColors.map((color, index) => (
-                                <linearGradient key={`gradient-${index}`} id={`barGradient${index}`} x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor={color} stopOpacity={1} />
-                                    <stop offset="100%" stopColor={color} stopOpacity={0.6} />
-                                </linearGradient>
-                            ))}
-                        </defs>
-
                         <XAxis
                             dataKey="displayName"
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fill: '#64748b', fontSize: 10, fontWeight: 700 }}
+                            tick={{ fill: '#7BA4D0', fontSize: 10, fontWeight: 900 }}
                         />
                         <YAxis hide domain={[0, 'dataMax + 2']} />
-                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(59, 130, 246, 0.05)' }} />
+                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(46, 94, 153, 0.05)' }} />
 
                         <Bar dataKey="value" radius={[8, 8, 0, 0]} barSize={40}>
                             {data.map((_, index) => (
@@ -86,7 +77,7 @@ export const KeywordContributionChart: React.FC<KeywordContributionChartProps> =
                             <LabelList
                                 dataKey="value"
                                 position="top"
-                                style={{ fill: '#1e293b', fontSize: 12, fontWeight: 800 }}
+                                style={{ fill: '#0D2440', fontSize: 12, fontWeight: 900 }}
                             />
                         </Bar>
                     </BarChart>
@@ -94,9 +85,9 @@ export const KeywordContributionChart: React.FC<KeywordContributionChartProps> =
             </div>
 
             {/* Footer Note */}
-            <div className="mt-2 pt-3 border-t border-blue-100/50 relative z-10">
-                <p className="text-[9px] text-slate-500 uppercase tracking-wider font-bold text-center">
-                    Top {data.length} Detected Categories
+            <div className="mt-2 pt-3 border-t border-brand-light relative z-10">
+                <p className="text-[9px] text-brand-medium uppercase tracking-wider font-bold text-center">
+                    Prioritized Category Concentration
                 </p>
             </div>
         </div>

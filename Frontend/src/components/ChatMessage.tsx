@@ -11,13 +11,13 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     return (
         <div className={`flex ${isAssistant ? 'justify-start' : 'justify-end'} mb-4 animate-fade-in`}>
             <div className={`max-w-[85%] lg:max-w-[75%] px-4 py-3 rounded-2xl ${isAssistant
-                    ? 'bg-indigo-50 text-slate-800 rounded-tl-none border border-indigo-100/50'
-                    : 'bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-tr-none shadow-md shadow-indigo-200'
+                ? 'bg-brand-light text-brand-dark rounded-tl-none border border-brand-medium/30'
+                : 'bg-brand-primary text-white rounded-tr-none shadow-md shadow-brand-primary/10'
                 }`}>
-                <div className="text-sm leading-relaxed whitespace-pre-wrap font-medium">
+                <div className="text-sm leading-relaxed whitespace-pre-wrap font-bold">
                     {message.content}
                 </div>
-                <div className={`text-[10px] mt-1.5 font-bold uppercase tracking-wider ${isAssistant ? 'text-slate-400' : 'text-white/60'}`}>
+                <div className={`text-[10px] mt-1.5 font-bold uppercase tracking-wider ${isAssistant ? 'text-brand-medium' : 'text-white/60'}`}>
                     {message.timestamp}
                 </div>
             </div>

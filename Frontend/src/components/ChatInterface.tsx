@@ -32,7 +32,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMe
             </div>
 
             {/* Input Area */}
-            <div className="p-4 bg-white/80 backdrop-blur-sm border-t border-indigo-50">
+            <div className="p-4 bg-white/80 backdrop-blur-sm border-t border-brand-light">
                 <ChatInput onSendMessage={onSendMessage} isDisabled={false} />
             </div>
         </div>
