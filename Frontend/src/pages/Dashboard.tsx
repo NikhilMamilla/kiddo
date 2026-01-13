@@ -9,7 +9,6 @@ import {
     LogOut,
     MessageSquare,
     Clock,
-    ChevronRight,
     Shield,
     Activity,
     Download,
@@ -17,9 +16,7 @@ import {
     LayoutGrid,
     Search,
     Bell,
-    Settings,
     User,
-    ArrowUpRight,
     Plus,
     X,
     Menu
@@ -50,8 +47,8 @@ const Dashboard: React.FC = () => {
         const cached = localStorage.getItem('kiddoo_sos_cache');
         return cached ? JSON.parse(cached) : [];
     });
-    const [historyLoading, setHistoryLoading] = useState(true);
-    const [sosLoading, setSosLoading] = useState(true);
+    // const [historyLoading, setHistoryLoading] = useState(true);
+    // const [sosLoading, setSosLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('overview');
     const [searchQuery, setSearchQuery] = useState('');
     const [showNotifications, setShowNotifications] = useState(false);
@@ -65,16 +62,13 @@ const Dashboard: React.FC = () => {
 
     useEffect(() => {
         if (!currentUser) {
-            setHistoryLoading(false);
-            setSosLoading(false);
             return;
         }
 
 
         // Optimistic finish: If Firestore is slow, don't leave the user hanging on "..."
+        // Optimistic finish: If Firestore is slow, don't leave the user hanging on "..."
         const loadingFallback = setTimeout(() => {
-            setHistoryLoading(false);
-            setSosLoading(false);
         }, 1000); // 1s is the new "instant" threshold
 
         const historyRef = collection(db, 'users', currentUser.uid, 'history');
@@ -90,10 +84,10 @@ const Dashboard: React.FC = () => {
             } as HistoryItem));
             setHistory(historyData);
             localStorage.setItem('kiddoo_history_cache', JSON.stringify(historyData));
-            setHistoryLoading(false);
+
         }, (error) => {
             console.error("Error listening to history:", error);
-            setHistoryLoading(false);
+
         });
 
         const unsubSos = onSnapshot(sosQuery, (snapshot) => {
@@ -103,10 +97,10 @@ const Dashboard: React.FC = () => {
             } as SOSLog));
             setSosLogs(sosData);
             localStorage.setItem('kiddoo_sos_cache', JSON.stringify(sosData));
-            setSosLoading(false);
+
         }, (error) => {
             console.error("Error listening to SOS logs:", error);
-            setSosLoading(false);
+
         });
 
         return () => {
@@ -176,7 +170,7 @@ const Dashboard: React.FC = () => {
         }
     };
 
-    const itemVariants = {
+    const itemVariants: any = {
         hidden: { y: 20, opacity: 0 },
         visible: {
             y: 0,
@@ -503,7 +497,7 @@ const Dashboard: React.FC = () => {
                                         <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform relative z-10">
                                             <Plus className="w-6 h-6" />
                                         </div>
-                                        <h3 className="font-bold text-lg text-brand-white/90 uppercase mb-1 relative z-10">New Interaction</h3>
+                                        <h3 className="font-bold text-lg text-brand-white/9 text-white uppercase mb-1 relative z-10">New Interaction</h3>
                                         <p className="text-brand-white/70 text-xs relative z-10">Consult with Agent</p>
                                     </Link>
                                 </motion.div>
@@ -519,7 +513,7 @@ const Dashboard: React.FC = () => {
                                     </div>
 
                                     <div className="divide-y divide-brand-light">
-                                        {filteredHistory.length > 0 ? filteredHistory.slice(0, 5).map((item, idx) => (
+                                        {filteredHistory.length > 0 ? filteredHistory.slice(0, 5).map((item) => (
                                             <div key={item.id} className="p-8 hover:bg-brand-light/30 transition-all group flex items-start gap-4">
                                                 <div className="w-12 h-12 bg-brand-light rounded-2xl flex items-center justify-center shrink-0 text-brand-medium group-hover:bg-brand-primary group-hover:text-white transition-all">
                                                     <MessageSquare className="w-5 h-5" />

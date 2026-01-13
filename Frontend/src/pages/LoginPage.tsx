@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Mail, Lock, LogIn, AlertCircle, ArrowLeft, Sparkles, Chrome } from 'lucide-react';
+import { Mail, Lock, LogIn, AlertCircle, ArrowLeft, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const LoginPage: React.FC = () => {

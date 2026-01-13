@@ -1,5 +1,5 @@
 import React from 'react';
-import { Phone, Anchor, Sun, Shield, ArrowRight, ExternalLink } from 'lucide-react';
+import { Anchor, Sun, Shield, ArrowRight, ExternalLink } from 'lucide-react';
 
 interface ResourceHubProps {
     state: string;
@@ -52,7 +52,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ state }) => {
 
     const content = getResources();
     const Icon = content.icon;
-    const isDark = content.accent === 'brand-dark';
+    // const isDark = content.accent === 'brand-dark';
 
     return (
         <div className="bg-white p-6 rounded-[2rem] shadow-xl border border-brand-light flex flex-col h-full relative overflow-hidden group font-sans">

@@ -4,13 +4,13 @@ import { getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBzKsdEJ3K0PnbsF5zJiq7d4UwYB-4g8lM",
-    authDomain: "health-agent-62071.firebaseapp.com",
-    projectId: "health-agent-62071",
-    storageBucket: "health-agent-62071.firebasestorage.app",
-    messagingSenderId: "144126616448",
-    appId: "1:144126616448:web:830c4d6f899e5b3d6c1765",
-    measurementId: "G-JWVEXJV1TH"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);

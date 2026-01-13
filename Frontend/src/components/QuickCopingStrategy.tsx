@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, Wind, Sparkles, Target, CheckCircle2 } from 'lucide-react';
+import { Heart, Wind, Target, CheckCircle2 } from 'lucide-react';
 
 interface QuickCopingStrategyProps {
     state: string;

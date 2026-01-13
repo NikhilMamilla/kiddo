@@ -14,7 +14,7 @@ import type { BDIResult } from '../types/bdi';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Heart, AlertTriangle, Menu, History, Fingerprint, LogOut, LayoutDashboard, LogIn, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { db } from '../config/firebase';
 import { collection, addDoc, query, orderBy, onSnapshot, limit } from 'firebase/firestore';
 
@@ -39,7 +39,7 @@ const Home: React.FC = () => {
     const [sosData, setSosData] = useState<any>(null);
     const [mobileTab, setMobileTab] = useState<'chat' | 'dashboard'>('chat');
     const { currentUser, logout } = useAuth();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const dashboardScrollRef = useRef<HTMLElement>(null);
 
     // Auto-scroll to top when switching to dashboard tab
@@ -156,18 +156,10 @@ const Home: React.FC = () => {
         };
         setMessages(prev => [...prev, userMsg]);
 
+
         try {
-            const [analysisResult, groqText] = await Promise.all([
-                analyzeMessage(content, reviewMode ? 'review' : 'user', history),
-                generateGroqResponse(content)
-            ]);
-
-            setAnalysisResult(analysisResult);
-
-            // Usage to avoid unused variable warnings
-            if (metrics || bdi || assistantResponse) {
-                console.log('Contextual data received:', { metrics, bdi, assistantResponse });
-            }
+            // 1. Get AI Response Immediately (Fast)
+            const groqText = await generateGroqResponse(content);
 
             const assistantMsg: Message = {
                 id: (Date.now() + 1).toString(),
@@ -182,54 +174,70 @@ const Home: React.FC = () => {
                 setMobileTab('dashboard');
             }, 5000);
 
-            // Save to Firestore if logged in
-            if (currentUser) {
-                try {
-                    const historyRef = collection(db, 'users', currentUser.uid, 'history');
-                    await addDoc(historyRef, {
-                        message: content,
-                        response: groqText,
-                        timestamp: new Date().toISOString(),
-                        classified_state: analysisResult.classified_state,
-                        sentiment_label: analysisResult.sentiment_analysis?.label || 'N/A'
-                    });
-                } catch (dbError) {
-                    console.error("Error saving interaction to Firestore:", dbError);
-                }
-            }
+            // 2. Run Analysis in Background (Does not block UI)
+            analyzeMessage(content, reviewMode ? 'review' : 'user', history)
+                .then(async (analysisResult) => {
+                    if (!analysisResult) return; // Safety check
 
-            const historyItem: PredictionHistoryItem = {
-                message: content,
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-                classified_state: analysisResult.classified_state,
-                intensity_score: analysisResult.intensity_score || 0,
-                sentiment_label: analysisResult.sentiment_analysis?.label || 'N/A',
-                sos_triggered: analysisResult.autonomous_action.sos_triggered
-            };
-            setHistory(prev => [...prev, historyItem]);
+                    setAnalysisResult(analysisResult);
 
-            if (analysisResult.autonomous_action.sos_triggered) {
-                setSosData(analysisResult.autonomous_action);
-                setIsEmergencyActive(true);
-
-                // Save SOS log if logged in
-                if (currentUser) {
-                    try {
-                        const sosRef = collection(db, 'users', currentUser.uid, 'sosLogs');
-                        await addDoc(sosRef, {
-                            timestamp: new Date().toISOString(),
-                            message: analysisResult.autonomous_action.message || 'Autonomous SOS Triggered',
-                            analysisResult: analysisResult.classified_state
-                        });
-                    } catch (dbError) {
-                        console.error("Error saving SOS log to Firestore:", dbError);
+                    // Save to Firestore if logged in
+                    if (currentUser) {
+                        try {
+                            const historyRef = collection(db, 'users', currentUser.uid, 'history');
+                            await addDoc(historyRef, {
+                                message: content,
+                                response: groqText,
+                                timestamp: new Date().toISOString(),
+                                classified_state: analysisResult.classified_state,
+                                sentiment_label: analysisResult.sentiment_analysis?.label || 'N/A'
+                            });
+                        } catch (dbError) {
+                            console.error("Error saving interaction to Firestore:", dbError);
+                        }
                     }
-                }
+
+                    const historyItem: PredictionHistoryItem = {
+                        message: content,
+                        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+                        classified_state: analysisResult.classified_state,
+                        intensity_score: analysisResult.intensity_score || 0,
+                        sentiment_label: analysisResult.sentiment_analysis?.label || 'N/A',
+                        sos_triggered: analysisResult.autonomous_action.sos_triggered
+                    };
+                    setHistory(prev => [...prev, historyItem]);
+
+                    if (analysisResult.autonomous_action.sos_triggered) {
+                        setSosData(analysisResult.autonomous_action);
+                        setIsEmergencyActive(true);
+
+                        // Save SOS log if logged in
+                        if (currentUser) {
+                            try {
+                                const sosRef = collection(db, 'users', currentUser.uid, 'sosLogs');
+                                await addDoc(sosRef, {
+                                    timestamp: new Date().toISOString(),
+                                    type: 'Autonomous Trigger',
+                                    message: analysisResult.autonomous_action.message,
+                                    contacts_notified: ["Parent", "Emergency Services"] // Mock data
+                                });
+                            } catch (error) {
+                                console.error("Error logging auto-SOS:", error);
+                            }
+                        }
+                    }
+                })
+                .catch(err => console.error("Background analysis failed:", err));
+
+            // Usage to avoid unused variable warnings
+            if (metrics || bdi || assistantResponse) {
+                console.log('Contextual data received:', { metrics, bdi, assistantResponse });
             }
-        } catch (err) {
-            console.error('Analysis failed:', err);
+        } catch (error) {
+            console.error("Error in message handling:", error);
         }
     };
+
 
     return (
         <div className="min-h-screen bg-brand-light font-sans selection:bg-brand-medium/30 selection:text-brand-dark">
