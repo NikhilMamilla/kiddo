@@ -16,7 +16,7 @@ import { Heart, AlertTriangle, Menu, History, Fingerprint, LogOut, LayoutDashboa
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { db } from '../config/firebase';
-import { collection, addDoc, query, orderBy, onSnapshot, limit } from 'firebase/firestore';
+import { collection, addDoc, query, orderBy, onSnapshot, limit, doc, getDoc } from 'firebase/firestore';
 
 const Home: React.FC = () => {
     const hydrationRef = useRef(false);
@@ -60,6 +60,8 @@ const Home: React.FC = () => {
             setHistory([]);
             return;
         }
+
+
 
         const historyRef = collection(db, 'users', currentUser.uid, 'history');
         const historyQuery = query(historyRef, orderBy('timestamp', 'desc'), limit(50));
@@ -124,7 +126,14 @@ const Home: React.FC = () => {
 
     const handleSOS = async () => {
         try {
-            const result = await triggerSOS();
+            // Get latest contacts
+            let contacts = [];
+            if (currentUser) {
+                const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+                contacts = userDoc.data()?.emergencyContacts || [];
+            }
+
+            const result = await triggerSOS(contacts);
             setSosData(result);
             setIsEmergencyActive(true);
 
@@ -135,7 +144,8 @@ const Home: React.FC = () => {
                     await addDoc(sosRef, {
                         timestamp: new Date().toISOString(),
                         type: 'Manual Trigger',
-                        message: result.message || 'Manual SOS Triggered'
+                        message: result.message || 'Manual SOS Triggered',
+                        contacts_notified: result.contacts_notified || []
                     });
                 } catch (dbError) {
                     console.error("Error saving SOS log to Firestore:", dbError);
@@ -175,7 +185,14 @@ const Home: React.FC = () => {
             }, 5000);
 
             // 2. Run Analysis in Background (Does not block UI)
-            analyzeMessage(content, reviewMode ? 'review' : 'user', history)
+            // Fetch contacts for analysis payload
+            let emergencyContacts = [];
+            if (currentUser) {
+                const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+                emergencyContacts = userDoc.data()?.emergencyContacts || [];
+            }
+
+            analyzeMessage(content, reviewMode ? 'review' : 'user', history, emergencyContacts)
                 .then(async (analysisResult) => {
                     if (!analysisResult) return; // Safety check
 

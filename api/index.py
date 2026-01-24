@@ -38,7 +38,10 @@ def trigger_sos():
     Manual SOS trigger endpoint.
     """
     try:
-        result = sos_service.trigger_sos()
+        data = request.get_json() or {}
+        emergency_contacts = data.get('emergency_contacts', [])
+        
+        result = sos_service.trigger_sos(emergency_contacts)
         return jsonify(result), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

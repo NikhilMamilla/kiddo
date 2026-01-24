@@ -383,7 +383,7 @@ const Dashboard: React.FC = () => {
                                 )}
                             </AnimatePresence>
                         </div>
-                        <div className="h-10 w-10 bg-brand-light rounded-full border border-brand-medium flex items-center justify-center text-brand-primary overflow-hidden font-bold text-lg">
+                        <Link to="/profile" className="h-10 w-10 bg-brand-light rounded-full border border-brand-medium flex items-center justify-center text-brand-primary overflow-hidden font-bold text-lg hover:ring-2 hover:ring-brand-primary/20 transition-all">
                             {currentUser?.photoURL && !imgError ? (
                                 <img
                                     src={currentUser.photoURL}
@@ -399,7 +399,7 @@ const Dashboard: React.FC = () => {
                                     }
                                 </span>
                             )}
-                        </div>
+                        </Link>
                     </div>
                 </header>
 

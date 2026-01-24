@@ -39,16 +39,16 @@ export interface AnalysisResponse {
     mode: 'user' | 'review';
 }
 
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
-export const analyzeMessage = async (message: string, mode: 'user' | 'review' = 'user', history: PredictionHistoryItem[] = []): Promise<AnalysisResponse> => {
+export const analyzeMessage = async (message: string, mode: 'user' | 'review' = 'user', history: PredictionHistoryItem[] = [], emergencyContacts: any[] = []): Promise<AnalysisResponse> => {
     try {
         const response = await fetch(`${API_BASE_URL}/analyze`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ message, mode, history }),
+            body: JSON.stringify({ message, mode, history, emergency_contacts: emergencyContacts }),
         });
 
         if (!response.ok) {
@@ -63,13 +63,14 @@ export const analyzeMessage = async (message: string, mode: 'user' | 'review' = 
     }
 };
 
-export const triggerSOS = async (): Promise<any> => {
+export const triggerSOS = async (emergencyContacts: any[] = []): Promise<any> => {
     try {
         const response = await fetch(`${API_BASE_URL}/sos/trigger`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            }
+            },
+            body: JSON.stringify({ emergency_contacts: emergencyContacts })
         });
 
         if (!response.ok) {
