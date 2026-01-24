@@ -4,6 +4,8 @@ import logging
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+import traceback
+
 # Configure Logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -11,6 +13,7 @@ logger = logging.getLogger(__name__)
 # Add local nltk_data path for Vercel deployment
 nltk_data_path = os.path.join(os.path.dirname(__file__), 'nltk_data')
 if os.path.exists(nltk_data_path):
+    os.environ['NLTK_DATA'] = nltk_data_path # Explicitly set for NLTK
     if nltk_data_path not in nltk.data.path:
         nltk.data.path.append(nltk_data_path)
     logger.info(f"NLTK data path added: {nltk_data_path}")
@@ -29,7 +32,7 @@ try:
     sos_service = SOSService()
     logger.info("Services initialized successfully")
 except Exception as e:
-    init_error = str(e)
+    init_error = traceback.format_exc()
     logger.error(f"Error initializing services: {init_error}")
     analysis_service = None
     sos_service = None
