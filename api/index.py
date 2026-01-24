@@ -1,16 +1,48 @@
+import os
+import nltk
+import logging
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from services.analysis_service import AnalysisService
-from services.sos_service import SOSService
+
+# Configure Logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Add local nltk_data path for Vercel deployment
+nltk_data_path = os.path.join(os.path.dirname(__file__), 'nltk_data')
+if os.path.exists(nltk_data_path):
+    if nltk_data_path not in nltk.data.path:
+        nltk.data.path.append(nltk_data_path)
+    logger.info(f"NLTK data path added: {nltk_data_path}")
+else:
+    logger.warning(f"NLTK data path not found: {nltk_data_path}")
 
 app = Flask(__name__)
-CORS(app) # Enable CORS for frontend integration later
+CORS(app)
 
-analysis_service = AnalysisService()
-sos_service = SOSService()
+# Initialize services with error handling for easier debugging
+init_error = None
+try:
+    from services.analysis_service import AnalysisService
+    from services.sos_service import SOSService
+    analysis_service = AnalysisService()
+    sos_service = SOSService()
+    logger.info("Services initialized successfully")
+except Exception as e:
+    init_error = str(e)
+    logger.error(f"Error initializing services: {init_error}")
+    analysis_service = None
+    sos_service = None
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
+    if not analysis_service:
+        return jsonify({
+            "error": "Backend services failed to initialize.",
+            "details": init_error,
+            "path": os.getcwd(),
+            "contents": os.listdir('.')
+        }), 500
     """
     Main endpoint for mental health text analysis.
     """
@@ -34,6 +66,8 @@ def analyze():
 
 @app.route('/sos/trigger', methods=['POST'])
 def trigger_sos():
+    if not sos_service:
+        return jsonify({"error": "SOS service failed to initialize. Check logs."}), 500
     """
     Manual SOS trigger endpoint.
     """
