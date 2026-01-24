@@ -34,7 +34,7 @@ except Exception as e:
     analysis_service = None
     sos_service = None
 
-@app.route('/analyze', methods=['POST'])
+@app.route('/api/analyze', methods=['POST'])
 def analyze():
     if not analysis_service:
         return jsonify({
@@ -64,7 +64,7 @@ def analyze():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/sos/trigger', methods=['POST'])
+@app.route('/api/sos/trigger', methods=['POST'])
 def trigger_sos():
     if not sos_service:
         return jsonify({"error": "SOS service failed to initialize. Check logs."}), 500
@@ -80,7 +80,7 @@ def trigger_sos():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/health', methods=['GET'])
+@app.route('/api/health', methods=['GET'])
 def health_check():
     return jsonify({"status": "healthy"}), 200
 
